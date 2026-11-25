@@ -232,9 +232,9 @@
     var top = viewRows().slice(0, 10);
     var max = top.length ? top[0].value : 1;
     return el('section', { class: 'spotlight', 'aria-label': 'Top 10 by implied value' },
-      top.map(function (x) {
+      top.map(function (x, i) {
         var r = x.row;
-        return el('button', { type: 'button', class: 'spot', onclick: function () { openDetail(r.slug); } },
+        return el('button', { type: 'button', class: i === 0 ? 'spot lead' : 'spot', onclick: function () { openDetail(r.slug); } },
           el('span', { class: 'rank', text: 'Rank ' + x.viewRank }),
           el('b', { text: r.name }),
           el('span', { class: 'val', text: fmtUsd(x.value) }),
@@ -308,7 +308,7 @@
       },
         el('td', { class: 'num', text: String(x.viewRank) }),
         el('td', null, el('div', { class: 'name' },
-          el('b', null, el('span', { text: r.name }), WATCHLIST[r.slug] ? el('span', { class: 'watch', text: 'WATCHLIST' }) : null),
+          el('b', null, el('span', { text: r.name }), WATCHLIST[r.slug] ? el('span', { class: 'watch', text: 'Watchlist' }) : null),
           el('span', { class: 'sub', text: (r.category || 'Other') + ' on ' + (r.chains && r.chains.length ? r.chains.slice(0, 2).join(', ') : 'an unnamed chain') })
         )),
         el('td', { class: 'num', text: fmtUsd(r.tvl_usd) }),
@@ -427,8 +427,12 @@
       ),
       el('button', { class: 'close', type: 'button', 'aria-label': 'Close details', text: 'Close', onclick: function () { dialog.close(); } })
     ));
+    dialog.appendChild(el('div', { class: 'detail-hero' },
+      el('span', { class: 'hero-label', text: 'Implied value, model ' + DATA.model_version }),
+      el('span', { class: 'hero-val', text: fmtUsd(value) })
+    ));
     dialog.appendChild(el('section', { class: 'detail-section' },
-      el('h3', { text: 'Implied value' }),
+      el('h3', { text: 'How the number is built' }),
       el('div', { class: 'equation' },
         el('div', null, el('span', { text: 'TVL' }), el('b', { class: 'num', text: fmtUsd(row.tvl_usd) })),
         el('div', null, el('span', { text: 'Seven-day growth' }), el('b', { class: 'num', text: fmtPct(row.change_7d) })),
